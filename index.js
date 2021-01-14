@@ -1,8 +1,7 @@
 const express = require("express");
 const checksumLib = require("./Paytm/checksum/checksum");
+const port = 3000;
 var path = require('path');
-const https = require("https");
-const qs = require("querystring");
 
 const app = express();
 
@@ -14,6 +13,9 @@ app.get("/", (req, res) => {
 });
 
 app.post("/pay", [parseUrl, parseJson], (req, res) => {
+  const REDIRECT_URL = "http://localhost:3000/pay";
+
+data.setRedirectUrl(REDIRECT_URL);
   var paymentDetails = {
     amount: req.body.amount,
     customerId: req.body.firstname,
@@ -27,6 +29,8 @@ app.post("/pay", [parseUrl, parseJson], (req, res) => {
   params["INDUSTRY_TYPE_ID"] = "Retail";
   params["ORDER_ID"] = "ORD" + new Date().getTime();
   params["CUST_ID"] = paymentDetails.customerId;
+  // params["CALLBACK_URL"] = "https://C:\Users\Suryansh\Desktop\paytm";
+  // params["CALLBACK_URL"] = "http://localhost:" + port + "/callback";
   params["CALLBACK_URL"] = "http://localhost:3000/callback";
   params["MOBILE_NO"] = paymentDetails.customerPhone;
   params["EMAIL"] = paymentDetails.customerEmail;
@@ -37,13 +41,23 @@ app.post("/pay", [parseUrl, parseJson], (req, res) => {
     let formFields = "";
     for (x in params) {
       formFields +=
-        "<input type = 'hidden' name = '" +x+ "' value = '" +params[x]+ "'/>";
+        "<input type = 'hidden' name = '" +
+        x +
+        "' value = '" +
+        params[x] +
+        "'/>";
     }
     formFields +=
-      "<input type = 'hidden' name = 'CHECKSUMHASH' value = '" + checksum + "'>";
+      "<input type = 'hidden' name = 'CHECKSUMHASH' value = '" +
+      checksum +
+      "'>";
 
     var html =
-      '<html><body><center>Please do not refresh this page...</center><form method = "post" action = "' +url+ '" name = "paymentForm">' +formFields+ '</form><script type = "text/javascript">document.paymentForm.submit()</script></body></html>';
+      '<html><body><center>Please do not refresh this page...</center><form method = "post" action = "' +
+      url +
+      '" name = "paymentForm">' +
+      formFields +
+      '</form><script type = "text/javascript">document.paymentForm.submit()</script></body></html>';
     res.writeHead(200, { "Content-Type": "text/html" });
     res.write(html);
     res.end();
@@ -51,70 +65,10 @@ app.post("/pay", [parseUrl, parseJson], (req, res) => {
 });
 
 
-// app.post("/callback", (req, res) => {
-
-//   res.sendFile(path.join(__dirname + '/index1.html'));
-
-// });
-
 app.post("/callback", (req, res) => {
 
-  var body = '';
+  res.sendFile(path.join(__dirname + '/index1.html'));
 
-  req.on('data', (data) => {
-     body += data;
-  });
-
-   req.on('end', () => {
-     var html = "";
-     var post_data = qs.parse(body);
-
-     console.log('Callback Response: ', post_data, "\n");
-
-
-
-     var params = {"MID": "uDInid37587374103313", "ORDERID": post_data.ORDERID};
-
-     checksumLib.genchecksum(params, "9lXKZ#MTKN13FDFp", (err, checksum) => {
-
-       params.CHECKSUMHASH = checksum;
-       post_data = 'JsonData='+JSON.stringify(params);
-
-       var options = {
-         hostname: 'securegw-stage.paytm.in', 
-         port: 443,
-         path: '/merchant-status/getTxnStatus',
-         method: 'POST',
-         headers: {
-           'Content-Type': 'application/x-www-form-urlencoded',
-           'Content-Length': post_data.length
-         }
-       };
-
-
-       // Set up the request
-      //  var response = "";
-       const post_req = https.request(options)
-        // , (post_res) => {
-        //  post_res.on('data', (chunk) => {
-        //    response += chunk;
-        //  });
-
-      //    post_res.on('end', () => {
-      //      console.log('S2S Response: ', response, "\n");
-
-      //      var _result = JSON.parse(response);
-      //        if(_result.STATUS == 'TXN_SUCCESS') {
-      //         res.sendFile(path.join(__dirname + '/index1.html'));
-      //        }else {
-      //            res.send('payment failed')
-      //        }
-      //      });
-      // //  });
-      //  post_req.write(post_data);
-       post_req.end();
-      });
-     });
 });
      
 
