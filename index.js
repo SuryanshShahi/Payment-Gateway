@@ -12,10 +12,8 @@ app.get("/", (req, res) => {
   res.sendFile(__dirname + "/index.html");
 });
 
-app.post("/pay", [parseUrl, parseJson], (req, res) => {
-  const REDIRECT_URL = "http://localhost:3000/pay";
+app.post("https://suryanshshahi.github.io/pay", [parseUrl, parseJson], (req, res) => {
 
-data.setRedirectUrl(REDIRECT_URL);
   var paymentDetails = {
     amount: req.body.amount,
     customerId: req.body.firstname,
