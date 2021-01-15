@@ -12,7 +12,7 @@ app.get("/", (req, res) => {
   res.sendFile(__dirname + "/index.html");
 });
 
-app.post("https://suryanshshahi.github.io/pay", [parseUrl, parseJson], (req, res) => {
+app.post("/pay", [parseUrl, parseJson], (req, res) => {
 
   var paymentDetails = {
     amount: req.body.amount,
