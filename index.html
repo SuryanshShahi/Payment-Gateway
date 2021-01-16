@@ -197,10 +197,31 @@
       border-radius: 4px;
       cursor: pointer;
     }
-
     input[type=submit]:hover {
       background-color: rgb(190, 75, 9);
     }
+    
+    input[type=select] {
+      width: 200px;
+      height: 58px;
+      margin: 8px 0;
+      background-color: darkorange;
+      color: white;
+      font-size: 17px;
+      padding: 14px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+     input[type=select]:focus {
+      background-color: darkorange;
+      color: white;
+    }
+    input[type=select]:hover {
+      background-color: darkorange;
+      color: white;
+    }
+    
 
     .form {
       background-color: #222121;
@@ -302,11 +323,11 @@
   <div class="form1">
     <h4>You are donating to: Wildlife Foundation</h4>
     <h5>How much would you like to donate?</h5>
-    <!-- <form>  -->
+    
       <div class="hero">  
-        <input id="DonationAmount" type="submit" value="₹2000">
-        <input id="DonationAmount" type="submit" value="₹5000">
-        <input id="DonationAmount" type="submit" value="₹10000">
+        <input id="DonationAmount" type="select" value="₹2000">
+        <input id="DonationAmount" type="select" value="₹5000">
+        <input id="DonationAmount" type="select" value="₹10000">
       </div>
   </div>
 
