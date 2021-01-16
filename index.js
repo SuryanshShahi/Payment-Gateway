@@ -1,9 +1,9 @@
 const express = require("express");
 const checksumLib = require("./Paytm/checksum/checksum");
-const port = 3000;
 var path = require('path');
 
 const app = express();
+var nodemailer = require('nodemailer');
 
 const parseUrl = express.urlencoded({ extended: false });
 const parseJson = express.json({ extended: false });
@@ -13,7 +13,6 @@ app.get("/", (req, res) => {
 });
 
 app.post("/pay", [parseUrl, parseJson], (req, res) => {
-
   var paymentDetails = {
     amount: req.body.amount,
     customerId: req.body.firstname,
@@ -58,6 +57,31 @@ app.post("/pay", [parseUrl, parseJson], (req, res) => {
     res.write(html);
     res.end();
   });
+
+
+
+  var transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'wildlifedonation06@gmail.com',
+      pass: 'thebeast@06'
+    }
+  });
+  
+  var mailOptions = {
+    from: 'wildlifedonation06@gmail.com',
+    to: paymentDetails.customerEmail,
+    subject: 'Thank You',
+    text: `Your donation of ₹` + paymentDetails.amount +` has been recieved`
+  };
+  
+  transporter.sendMail(mailOptions, function(error, info){
+    if (error) {
+      console.log(error);
+    } else {
+      console.log('Email sent: ' + info.response);
+    }
+  });
 });
 
 
@@ -66,6 +90,13 @@ app.post("/callback", (req, res) => {
   res.sendFile(path.join(__dirname + '/index1.html'));
 
 });
+
+
+
+
+
      
 
 app.listen(3000, () => console.log("App is running at port 3000..."));
+
+
